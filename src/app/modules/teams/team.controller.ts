@@ -16,6 +16,17 @@ const createTeam = catchAsync(async (req, res) => {
   })
 })
 
+const getALLTeam = catchAsync(async (req, res) => {
+  const result = await TeamServices.getAllTeamFormDB()
+
+  sendResponse(res, {
+    statusCode: httpstatus.OK,
+    success: true,
+    message: 'All Team retrieved successfully',
+    data: result,
+  })
+})
+
 const getSingleTeam = catchAsync(async (req, res) => {
   const id = req.params.id
   const result = await TeamServices.getTeamFormDB(id)
@@ -30,5 +41,6 @@ const getSingleTeam = catchAsync(async (req, res) => {
 
 export const TeamControllers = {
   createTeam,
+  getALLTeam,
   getSingleTeam,
 }

@@ -6,6 +6,11 @@ const createTeamIntoDB = async (payload: TTeam): Promise<TTeam> => {
   return result
 }
 
+const getAllTeamFormDB = async () => {
+  const result = await Team.find()
+  return result
+}
+
 const getTeamFormDB = async (id: string): Promise<TTeam | null> => {
   const result = await Team.findById(id).populate('members.user')
   return result
@@ -13,5 +18,6 @@ const getTeamFormDB = async (id: string): Promise<TTeam | null> => {
 
 export const TeamServices = {
   createTeamIntoDB,
+  getAllTeamFormDB,
   getTeamFormDB,
 }
