@@ -1025,6 +1025,16 @@ http-errors@2.0.0:
     statuses "2.0.1"
     toidentifier "1.0.1"
 
+http-status@^1.7.3:
+  version "1.7.3"
+  resolved "https://registry.npmjs.org/http-status/-/http-status-1.7.3.tgz"
+  integrity sha512-GS8tL1qHT2nBCMJDYMHGkkkKQLNkIAHz37vgO68XKvzv+XyqB4oh/DfmMHdtRzfqSJPj1xKG2TaELZtlCz6BEQ==
+
+httpstatus@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/httpstatus/-/httpstatus-1.0.0.tgz"
+  integrity sha512-oEuVxAXiGVWpQM/HmgWRvmKLnTNHFn7CrVVuFhJrGD3r5ktZ/fMDS+Y3mDidGvCg1Ok4DjY+v4j/8yBno7UDqQ==
+
 iconv-lite@0.4.24:
   version "0.4.24"
   resolved "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.24.tgz"
