@@ -3,7 +3,7 @@ import { TMember, TTeam } from './team.interface'
 
 const teamMemberSchema = new Schema<TMember>(
   {
-    user_id: {
+    user: {
       type: Schema.Types.ObjectId,
       ref: 'User', // Reference to the User model
     },
