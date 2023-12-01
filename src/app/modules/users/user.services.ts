@@ -18,25 +18,23 @@ const getAllUsersFromDB = async (
 }
 
 // Retrieve a specific user
-const getSingleUserFromDB = async (userId: string): Promise<TUser | null> => {
-  const user = await User.findById(userId)
+const getSingleUserFromDB = async (id: string): Promise<TUser | null> => {
+  const user = await User.findOne({ id: id })
   return user
 }
 
 // Update user
-const updateUserIntoDB = async (
-  userId: string,
-  payload: TUser,
-): Promise<TUser | null> => {
-  const result = await User.findByIdAndUpdate(userId, payload, {
+const updateUserIntoDB = async (id: string, payload: Partial<TUser>) => {
+  const result = await User.findOneAndUpdate({ id: id }, payload, {
     new: true,
   })
   return result
 }
 
 // Delete a user
-const deleteUserFromDB = async (userId: string): Promise<void> => {
-  await User.findByIdAndDelete(userId)
+const deleteUserFromDB = async (id: string) => {
+  const result = await User.findOneAndDelete({ id: id })
+  return result
 }
 
 export const UserServices = {
