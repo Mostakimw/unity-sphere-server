@@ -7,7 +7,7 @@ const createTeamIntoDB = async (payload: TTeam): Promise<TTeam> => {
 }
 
 const getAllTeamFormDB = async () => {
-  const result = await Team.find()
+  const result = await Team.find().populate('members.user')
   return result
 }
 

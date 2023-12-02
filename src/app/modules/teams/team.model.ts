@@ -23,4 +23,15 @@ const teamSchema = new Schema<TTeam>({
   },
 })
 
+teamSchema.pre('save', async function (next) {
+  const teamName = this.team_name
+  const teamCount = await Team.countDocuments({ team_name: teamName })
+
+  if (teamCount !== 0) {
+    throw new Error('Team name is already taken')
+  } else {
+    next()
+  }
+})
+
 export const Team = model<TTeam>('Team', teamSchema)

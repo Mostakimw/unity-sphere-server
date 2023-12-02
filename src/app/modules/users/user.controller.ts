@@ -18,11 +18,11 @@ const createUser = catchAsync(async (req, res) => {
 
 const getAllUsers = catchAsync(async (req, res) => {
   const page = Number(req.query.page) || 1
-  const pageSize = Number(req.query.pageSize) || 10
+  const pageSize = Number(req.query.pageSize) || 100000
 
   const { users, totalPages } = await UserServices.getAllUsersFromDB(
     page,
-    pageSize,
+    pageSize === 1000 ? 0 : pageSize,
   )
 
   sendResponse(res, {
