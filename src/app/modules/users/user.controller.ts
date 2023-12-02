@@ -17,17 +17,19 @@ const createUser = catchAsync(async (req, res) => {
 })
 
 const getAllUsers = catchAsync(async (req, res) => {
-  const { page = 1, pageSize = 10 } = req.query
-  const result = await UserServices.getAllUsersFromDB(
-    Number(page),
-    Number(pageSize),
+  const page = Number(req.query.page) || 1
+  const pageSize = Number(req.query.pageSize) || 10
+
+  const { users, totalPages } = await UserServices.getAllUsersFromDB(
+    page,
+    pageSize,
   )
 
   sendResponse(res, {
     statusCode: httpstatus.OK,
     success: true,
     message: 'Users retrieved successfully',
-    data: result,
+    data: { users, totalPages },
   })
 })
 

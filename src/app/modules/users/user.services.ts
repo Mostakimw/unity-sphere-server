@@ -7,14 +7,15 @@ const createUserIntoDB = async (payload: TUser): Promise<TUser> => {
   return createdUser
 }
 
-const getAllUsersFromDB = async (
-  page: number,
-  pageSize: number,
-): Promise<TUser[]> => {
-  const users = await User.find()
-    .skip((page - 1) * pageSize)
-    .limit(pageSize)
-  return users
+// get all users
+const getAllUsersFromDB = async (page: number, pageSize: number) => {
+  const startIndex = (page - 1) * pageSize
+
+  const users = await User.find().skip(startIndex).limit(pageSize)
+  const totalUsers = await User.countDocuments()
+  const totalPages = Math.ceil(totalUsers / pageSize)
+
+  return { users, totalPages }
 }
 
 // Retrieve a specific user
