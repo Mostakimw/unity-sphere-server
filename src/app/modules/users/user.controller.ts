@@ -16,14 +16,48 @@ const createUser = catchAsync(async (req, res) => {
   })
 })
 
+// const getAllUsers = catchAsync(async (req, res) => {
+//   const page = Number(req.query.page) || 1
+//   const pageSize = Number(req.query.pageSize) || 100000
+
+//   const { users, totalPages } = await UserServices.getAllUsersFromDB(
+//     page,
+//     pageSize === 1000 ? 0 : pageSize,
+//   )
+
+//   sendResponse(res, {
+//     statusCode: httpstatus.OK,
+//     success: true,
+//     message: 'Users retrieved successfully',
+//     data: { users, totalPages },
+//   })
+// })
+
 const getAllUsers = catchAsync(async (req, res) => {
   const page = Number(req.query.page) || 1
   const pageSize = Number(req.query.pageSize) || 100000
+  const query = (req.query.query as string) || ''
 
-  const { users, totalPages } = await UserServices.getAllUsersFromDB(
-    page,
-    pageSize === 1000 ? 0 : pageSize,
-  )
+  let users, totalPages
+
+  if (query) {
+    // Search logic
+    const searchResults = await UserServices.searchUsersFromDB(
+      query,
+      page,
+      pageSize,
+    )
+    users = searchResults.users
+    totalPages = searchResults.totalPages // Since there is no pagination for search
+  } else {
+    // Regular retrieval logic without search
+    const result = await UserServices.getAllUsersFromDB(
+      page,
+      pageSize === 1000 ? 0 : pageSize,
+    )
+    users = result.users
+    totalPages = result.totalPages
+  }
 
   sendResponse(res, {
     statusCode: httpstatus.OK,

@@ -38,10 +38,40 @@ const deleteUserFromDB = async (id: string) => {
   return result
 }
 
+// search implement
+const searchUsersFromDB = async (
+  query: string,
+  page: number,
+  pageSize: number,
+) => {
+  const startIndex = (page - 1) * pageSize
+
+  const result = await User.find({
+    $or: [
+      { first_name: { $regex: query, $options: 'i' } },
+      { last_name: { $regex: query, $options: 'i' } },
+    ],
+  })
+    .skip(startIndex)
+    .limit(pageSize)
+
+  const totalUsers = await User.countDocuments({
+    $or: [
+      { first_name: { $regex: query, $options: 'i' } },
+      { last_name: { $regex: query, $options: 'i' } },
+    ],
+  })
+
+  const totalPages = Math.ceil(totalUsers / pageSize)
+
+  return { users: result, totalPages }
+}
+
 export const UserServices = {
   createUserIntoDB,
   getAllUsersFromDB,
   getSingleUserFromDB,
   updateUserIntoDB,
   deleteUserFromDB,
+  searchUsersFromDB,
 }
