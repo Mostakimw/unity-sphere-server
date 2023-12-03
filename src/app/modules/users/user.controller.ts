@@ -1,6 +1,6 @@
 import catchAsync from '../../utils/catchAsync'
 import sendResponse from '../../utils/sendResponse'
-import { TUser } from './user.interface'
+import { TFilter, TUser } from './user.interface'
 import { UserServices } from './user.services'
 import httpstatus from 'http-status'
 
@@ -16,42 +16,35 @@ const createUser = catchAsync(async (req, res) => {
   })
 })
 
-// const getAllUsers = catchAsync(async (req, res) => {
-//   const page = Number(req.query.page) || 1
-//   const pageSize = Number(req.query.pageSize) || 100000
-
-//   const { users, totalPages } = await UserServices.getAllUsersFromDB(
-//     page,
-//     pageSize === 1000 ? 0 : pageSize,
-//   )
-
-//   sendResponse(res, {
-//     statusCode: httpstatus.OK,
-//     success: true,
-//     message: 'Users retrieved successfully',
-//     data: { users, totalPages },
-//   })
-// })
-
 const getAllUsers = catchAsync(async (req, res) => {
   const page = Number(req.query.page) || 1
   const pageSize = Number(req.query.pageSize) || 100000
-  const query = (req.query.query as string) || ''
+  const searchQuery = (req.query.query as string) || ''
+
+  const filter: TFilter = {
+    domain: req.query.domain as string,
+    gender: req.query.gender as string,
+    available:
+      req.query.available !== undefined && req.query.available !== 'null'
+        ? req.query.available === 'true'
+        : undefined,
+  }
 
   let users, totalPages
 
-  if (query) {
+  if (searchQuery) {
     // Search logic
     const searchResults = await UserServices.searchUsersFromDB(
-      query,
+      searchQuery,
       page,
       pageSize,
     )
     users = searchResults.users
-    totalPages = searchResults.totalPages // Since there is no pagination for search
+    totalPages = searchResults.totalPages
   } else {
     // Regular retrieval logic without search
     const result = await UserServices.getAllUsersFromDB(
+      filter,
       page,
       pageSize === 1000 ? 0 : pageSize,
     )

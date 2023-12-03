@@ -1,4 +1,4 @@
-import { TUser } from './user.interface'
+import { TFilter, TUser, UserDocument } from './user.interface'
 import { User } from './user.model'
 
 // Create a new user
@@ -7,15 +7,79 @@ const createUserIntoDB = async (payload: TUser): Promise<TUser> => {
   return createdUser
 }
 
-// get all users
-const getAllUsersFromDB = async (page: number, pageSize: number) => {
-  const startIndex = (page - 1) * pageSize
+// const getAllUsersFromDB = async (
+//   filter: TFilter,
+//   page: number,
+//   pageSize: number,
+// ): Promise<{ users: UserDocument[]; totalPages: number }> => {
+//   const query = User.find()
 
-  const users = await User.find().skip(startIndex).limit(pageSize)
-  const totalUsers = await User.countDocuments()
+//   if (filter.domain) {
+//     query.where('domain').equals(filter.domain)
+//   }
+
+//   if (filter.gender) {
+//     query.where('gender').equals(filter.gender)
+//   }
+
+//   if (filter.available !== undefined) {
+//     query.where('available').equals(filter.available)
+//   }
+
+//   // Execute the query and fetch the users
+//   const users = await query
+//     .skip((page - 1) * pageSize)
+//     .limit(pageSize)
+//     .exec()
+
+//   // Explicitly cast each user document to UserDocument type
+//   const typedUsers: UserDocument[] = users.map(
+//     (user) => user.toObject() as UserDocument,
+//   )
+
+//   const totalUsers = typedUsers.length // Count the users from the result array
+
+//   const totalPages = Math.ceil(totalUsers / pageSize)
+
+//   return { users: typedUsers, totalPages }
+// }
+
+const getAllUsersFromDB = async (
+  filter: TFilter,
+  page: number,
+  pageSize: number,
+): Promise<{ users: UserDocument[]; totalPages: number }> => {
+  const query = User.find()
+
+  if (filter.domain) {
+    query.where('domain').equals(filter.domain)
+  }
+
+  if (filter.gender) {
+    query.where('gender').equals(filter.gender)
+  }
+
+  if (filter.available !== undefined) {
+    query.where('available').equals(filter.available)
+  }
+
+  // Execute the query and fetch the users
+  const users = await query
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
+    .exec()
+
+  // Explicitly cast each user document to UserDocument type
+  const typedUsers: UserDocument[] = users.map(
+    (user) => user.toObject() as UserDocument,
+  )
+
+  console.log(typedUsers)
+  const totalUsers = typedUsers.length // Count the users from the result array
+
   const totalPages = Math.ceil(totalUsers / pageSize)
 
-  return { users, totalPages }
+  return { users: typedUsers, totalPages }
 }
 
 // Retrieve a specific user

@@ -8,3 +8,15 @@ export interface TUser {
   domain: string
   available: boolean
 }
+
+export interface TFilter {
+  domain?: string
+  gender?: string
+  available?: boolean | undefined
+}
+
+export interface UserDocument extends Document {
+  domain: string
+  gender: string
+  available: boolean
+}
