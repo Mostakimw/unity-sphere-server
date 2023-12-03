@@ -7,79 +7,33 @@ const createUserIntoDB = async (payload: TUser): Promise<TUser> => {
   return createdUser
 }
 
-// const getAllUsersFromDB = async (
-//   filter: TFilter,
-//   page: number,
-//   pageSize: number,
-// ): Promise<{ users: UserDocument[]; totalPages: number }> => {
-//   const query = User.find()
-
-//   if (filter.domain) {
-//     query.where('domain').equals(filter.domain)
-//   }
-
-//   if (filter.gender) {
-//     query.where('gender').equals(filter.gender)
-//   }
-
-//   if (filter.available !== undefined) {
-//     query.where('available').equals(filter.available)
-//   }
-
-//   // Execute the query and fetch the users
-//   const users = await query
-//     .skip((page - 1) * pageSize)
-//     .limit(pageSize)
-//     .exec()
-
-//   // Explicitly cast each user document to UserDocument type
-//   const typedUsers: UserDocument[] = users.map(
-//     (user) => user.toObject() as UserDocument,
-//   )
-
-//   const totalUsers = typedUsers.length // Count the users from the result array
-
-//   const totalPages = Math.ceil(totalUsers / pageSize)
-
-//   return { users: typedUsers, totalPages }
-// }
-
 const getAllUsersFromDB = async (
   filter: TFilter,
   page: number,
   pageSize: number,
 ): Promise<{ users: UserDocument[]; totalPages: number }> => {
-  const query = User.find()
+  let query = User.find()
 
   if (filter.domain) {
-    query.where('domain').equals(filter.domain)
+    query = query.where('domain').equals(filter.domain)
   }
 
   if (filter.gender) {
-    query.where('gender').equals(filter.gender)
+    query = query.where('gender').equals(filter.gender)
   }
 
-  if (filter.available !== undefined) {
-    query.where('available').equals(filter.available)
-  }
+  const startIndex = (page - 1) * pageSize
+  query = query.skip(startIndex).limit(pageSize)
 
-  // Execute the query and fetch the users
-  const users = await query
-    .skip((page - 1) * pageSize)
-    .limit(pageSize)
-    .exec()
+  const rawUsers = await query.exec()
 
-  // Explicitly cast each user document to UserDocument type
-  const typedUsers: UserDocument[] = users.map(
-    (user) => user.toObject() as UserDocument,
-  )
+  // Mongoose's toObject method to convert documents to plain JavaScript objects
+  const users = rawUsers.map((user) => user.toObject() as UserDocument)
 
-  console.log(typedUsers)
-  const totalUsers = typedUsers.length // Count the users from the result array
-
+  const totalUsers = await User.countDocuments()
   const totalPages = Math.ceil(totalUsers / pageSize)
 
-  return { users: typedUsers, totalPages }
+  return { users, totalPages }
 }
 
 // Retrieve a specific user

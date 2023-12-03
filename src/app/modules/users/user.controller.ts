@@ -19,28 +19,28 @@ const createUser = catchAsync(async (req, res) => {
 const getAllUsers = catchAsync(async (req, res) => {
   const page = Number(req.query.page) || 1
   const pageSize = Number(req.query.pageSize) || 100000
-  const searchQuery = (req.query.query as string) || ''
+  const query = (req.query.query as string) || ''
 
   const filter: TFilter = {
     domain: req.query.domain as string,
     gender: req.query.gender as string,
-    available:
-      req.query.available !== undefined && req.query.available !== 'null'
-        ? req.query.available === 'true'
-        : undefined,
+    // available:
+    //   req.query.available !== undefined && req.query.available !== 'null'
+    //     ? req.query.available === 'true'
+    //     : undefined,
   }
 
   let users, totalPages
 
-  if (searchQuery) {
+  if (query) {
     // Search logic
     const searchResults = await UserServices.searchUsersFromDB(
-      searchQuery,
+      query,
       page,
       pageSize,
     )
     users = searchResults.users
-    totalPages = searchResults.totalPages
+    totalPages = searchResults.totalPages // Since there is no pagination for search
   } else {
     // Regular retrieval logic without search
     const result = await UserServices.getAllUsersFromDB(
